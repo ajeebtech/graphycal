@@ -77,7 +77,7 @@ export default function Home() {
             activeColor={hasSearched ? '#EAB308' : undefined} // Yellow for P2
           />
           <button className={styles.actionButton} onClick={handleSearch}>
-            SEARCH
+            COMPARE
           </button>
 
           {error && (

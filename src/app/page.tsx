@@ -13,10 +13,12 @@ export default function Home() {
   const [statsP1, setStatsP1] = useState<any>(null);
   const [statsP2, setStatsP2] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
   const handleSearch = async () => {
     if (!p1 && !p2) return;
     setLoading(true);
+    setHasSearched(true);
 
     try {
       const fetchData = async (player: any) => {
@@ -46,6 +48,7 @@ export default function Home() {
           <SearchAutocomplete
             placeholder="Enter name of player..."
             onSelect={(p) => setP1(p)}
+            activeColor={hasSearched ? '#2563EB' : undefined} // Blue for P1
           />
           <div className={styles.vsLabel}>
             VS.
@@ -53,6 +56,7 @@ export default function Home() {
           <SearchAutocomplete
             placeholder="Enter comparison player..."
             onSelect={(p) => setP2(p)}
+            activeColor={hasSearched ? '#EAB308' : undefined} // Yellow for P2
           />
           <button className={styles.actionButton} onClick={handleSearch}>
             SEARCH

@@ -15,17 +15,28 @@ interface SearchResult {
 interface SearchAutocompleteProps {
     placeholder?: string;
     onSelect?: (player: SearchResult) => void;
+    activeColor?: string;
 }
 
-export default function SearchAutocomplete({ placeholder, onSelect }: SearchAutocompleteProps) {
+export default function SearchAutocomplete({ placeholder, onSelect, activeColor }: SearchAutocompleteProps) {
     const [query, setQuery] = useState("");
     const [results, setResults] = useState<SearchResult[]>([]);
     const [loading, setLoading] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
+    const [selectedItem, setSelectedItem] = useState<SearchResult | null>(null);
     const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+    const isSelecting = useRef(false);
 
     useEffect(() => {
         if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
+
+        if (isSelecting.current) {
+            isSelecting.current = false;
+            return;
+        }
+
+        // If we have a selected item and user types (implied by clearing it), we reset
+        if (selectedItem) return;
 
         if (!query || query.length < 2) {
             setResults([]);
@@ -60,14 +71,23 @@ export default function SearchAutocomplete({ placeholder, onSelect }: SearchAuto
         return () => {
             if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
         };
-    }, [query]);
+    }, [query]); // Note: Removing query dep if selectedItem handles it might be needed, but let's keep it simple
 
     const handleSelect = (player: SearchResult) => {
+        isSelecting.current = true;
+        setSelectedItem(player);
         setQuery(player.name);
         setShowDropdown(false);
         if (onSelect) onSelect(player);
     };
 
+    const clearSelection = () => {
+        setSelectedItem(null);
+        // query is already player.name, just keep it or clear it?
+        // Usually user wants to edit, so keeping it is fine.
+    };
+
+    // Flag helper
     const getFlagEmoji = (countryCode?: string) => {
         if (!countryCode) return '';
         try {
@@ -83,31 +103,66 @@ export default function SearchAutocomplete({ placeholder, onSelect }: SearchAuto
     return (
         <div className={styles.searchWrapper}>
             <div className={styles.inputContainer}>
-                <input
-                    type="text"
-                    placeholder={placeholder || "Search player..."}
-                    className={styles.searchInput}
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    onFocus={() => query.length >= 2 && setShowDropdown(true)}
-                    onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-                />
-                <div className={styles.inputIcon}>
-                    {loading ? (
-                        <Loader2 size={18} className={styles.spinner} />
-                    ) : (
-                        <Search size={18} style={{ opacity: 0.5, color: 'var(--accent-primary)' }} />
-                    )}
-                </div>
+                {selectedItem ? (
+                    <div
+                        className={styles.searchInput}
+                        onClick={clearSelection}
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            cursor: 'pointer',
+                            background: activeColor || 'var(--accent-primary)', // Use activeColor if provided
+                            color: 'black',
+                            transition: 'background-color 0.5s ease', // Add animation
+                            border: activeColor ? `1px solid ${activeColor}` : undefined
+                        }}
+                    >
+                        <span style={{ fontWeight: 700 }}>
+                            {getFlagEmoji(selectedItem.country)}{selectedItem.name}
+                        </span>
+                        {selectedItem.team && (
+                            <span style={{ opacity: 0.7, fontSize: '0.8em' }}>
+                                {selectedItem.team}
+                            </span>
+                        )}
+                    </div>
+                ) : (
+                    <input
+                        type="text"
+                        placeholder={placeholder || "Search player..."}
+                        className={styles.searchInput}
+                        value={query}
+                        onChange={(e) => {
+                            setSelectedItem(null); // Clear selection on type
+                            setQuery(e.target.value);
+                        }}
+                        onFocus={() => query.length >= 2 && setShowDropdown(true)}
+                        onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                    />
+                )}
+
+                {!selectedItem && (
+                    <div className={styles.inputIcon}>
+                        {loading ? (
+                            <Loader2 size={18} className={styles.spinner} />
+                        ) : (
+                            <Search size={18} style={{ opacity: 0.5, color: 'var(--accent-primary)' }} />
+                        )}
+                    </div>
+                )}
             </div>
 
-            {showDropdown && results.length > 0 && (
+            {showDropdown && !selectedItem && results.length > 0 && (
                 <div className={styles.dropdown}>
                     {results.map((player) => (
                         <div
                             key={player.id}
                             className={styles.dropdownItem}
-                            onClick={() => handleSelect(player)}
+                            onMouseDown={(e) => {
+                                e.preventDefault();
+                                handleSelect(player);
+                            }}
                         >
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <span>

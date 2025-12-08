@@ -44,7 +44,7 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.searchContainer}>
           <SearchAutocomplete
-            placeholder="Enter name of striker..."
+            placeholder="Enter name of player..."
             onSelect={(p) => setP1(p)}
           />
           <div className={styles.vsLabel}>

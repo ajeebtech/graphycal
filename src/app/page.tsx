@@ -7,19 +7,28 @@ import SearchAutocomplete from "@/components/SearchAutocomplete";
 import IntroSplash from "@/components/IntroSplash";
 import { useState } from "react";
 
+const COLORS = [
+  '#2563EB', // Blue
+  '#EAB308', // Yellow
+  '#39FF14', // Neon Green
+  '#FF073A', // Neon Red
+  '#B026FF', // Neon Purple
+  '#00FFFF', // Cyan
+];
+
 export default function Home() {
-  const [p1, setP1] = useState<any>(null);
-  const [p2, setP2] = useState<any>(null);
-  const [statsP1, setStatsP1] = useState<any>(null);
-  const [statsP2, setStatsP2] = useState<any>(null);
+  const [players, setPlayers] = useState<any[]>([null, null]); // Start with 2 slots
+  const [stats, setStats] = useState<any[]>([null, null]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchKey, setSearchKey] = useState(0); // Used to force-reset child components
   const [error, setError] = useState<string | null>(null);
 
   const handleSearch = async () => {
-    if (!p1 || !p2) {
-      setError("you need 2 players to do a comparision");
+    // Validate at least 2 players are selected
+    const selectedPlayers = players.filter(p => p !== null);
+    if (selectedPlayers.length < 2) {
+      setError("you need at least 2 players to do a comparision");
       return;
     }
     setError(null);
@@ -34,9 +43,8 @@ export default function Home() {
         return result.data;
       };
 
-      const [d1, d2] = await Promise.all([fetchData(p1), fetchData(p2)]);
-      setStatsP1(d1);
-      setStatsP2(d2);
+      const results = await Promise.all(players.map(p => fetchData(p)));
+      setStats(results);
     } catch (e) {
       console.error("Failed to fetch stats", e);
     } finally {
@@ -45,13 +53,25 @@ export default function Home() {
   };
 
   const handleReset = () => {
-    setP1(null);
-    setP2(null);
-    setStatsP1(null);
-    setStatsP2(null);
+    setPlayers([null, null]);
+    setStats([null, null]);
     setHasSearched(false);
     setError(null);
     setSearchKey(prev => prev + 1); // Force reset of Autocompletes
+  };
+
+  const updatePlayer = (index: number, player: any) => {
+    const newPlayers = [...players];
+    newPlayers[index] = player;
+    setPlayers(newPlayers);
+    setError(null);
+  };
+
+  const addPlayerSlot = () => {
+    if (players.length < 5) {
+      setPlayers([...players, null]);
+      setStats([...stats, null]);
+    }
   };
 
   return (
@@ -61,21 +81,40 @@ export default function Home() {
 
       <main className={styles.main}>
         <div className={styles.searchContainer}>
-          <SearchAutocomplete
-            key={`p1-${searchKey}`}
-            placeholder="Enter name of player..."
-            onSelect={(p) => { setP1(p); setError(null); }}
-            activeColor={hasSearched ? '#2563EB' : undefined} // Blue for P1
-          />
-          <div className={styles.vsLabel}>
-            VS.
-          </div>
-          <SearchAutocomplete
-            key={`p2-${searchKey}`}
-            placeholder="Enter comparison player..."
-            onSelect={(p) => { setP2(p); setError(null); }}
-            activeColor={hasSearched ? '#EAB308' : undefined} // Yellow for P2
-          />
+          {players.map((p, idx) => (
+            <div key={`slot-${idx}-${searchKey}`} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              <SearchAutocomplete
+                placeholder={`Player ${idx + 1}`}
+                onSelect={(player) => updatePlayer(idx, player)}
+                activeColor={hasSearched ? COLORS[idx] : undefined}
+              />
+              {idx < players.length - 1 && (
+                <div className={styles.vsLabel}>
+                  VS.
+                </div>
+              )}
+            </div>
+          ))}
+
+          {players.length < 5 && (
+            <button
+              onClick={addPlayerSlot}
+              style={{
+                background: 'transparent',
+                border: '1px dashed #333',
+                color: '#666',
+                padding: '0.5rem',
+                cursor: 'pointer',
+                fontFamily: 'monospace',
+                fontSize: '1.2rem',
+                width: '100%'
+              }}
+              title="Add another player"
+            >
+              +
+            </button>
+          )}
+
           <button className={styles.actionButton} onClick={handleSearch}>
             COMPARE
           </button>
@@ -102,7 +141,7 @@ export default function Home() {
 
         <div className={styles.card}>
           <div className={styles.chartContainer}>
-            <PlayerRadar p1={statsP1} p2={statsP2} />
+            <PlayerRadar stats={stats} />
           </div>
         </div>
         <p className={styles.disclaimer}>* Data Last 90 Days</p>

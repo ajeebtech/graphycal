@@ -6,6 +6,7 @@ import PlayerRadar from "@/components/PlayerRadar";
 import SearchAutocomplete from "@/components/SearchAutocomplete";
 import IntroSplash from "@/components/IntroSplash";
 import { useState } from "react";
+import { Analytics } from "@vercel/analytics/next"
 
 export default function Home() {
   const [p1, setP1] = useState<any>(null);

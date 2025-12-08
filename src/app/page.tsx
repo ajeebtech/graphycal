@@ -14,6 +14,7 @@ export default function Home() {
   const [statsP2, setStatsP2] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [searchKey, setSearchKey] = useState(0); // Used to force-reset child components
 
   const handleSearch = async () => {
     if (!p1 && !p2) return;
@@ -38,6 +39,15 @@ export default function Home() {
     }
   };
 
+  const handleReset = () => {
+    setP1(null);
+    setP2(null);
+    setStatsP1(null);
+    setStatsP2(null);
+    setHasSearched(false);
+    setSearchKey(prev => prev + 1); // Force reset of Autocompletes
+  };
+
   return (
     <div className={styles.page}>
       <IntroSplash />
@@ -46,6 +56,7 @@ export default function Home() {
       <main className={styles.main}>
         <div className={styles.searchContainer}>
           <SearchAutocomplete
+            key={`p1-${searchKey}`}
             placeholder="Enter name of player..."
             onSelect={(p) => setP1(p)}
             activeColor={hasSearched ? '#2563EB' : undefined} // Blue for P1
@@ -54,6 +65,7 @@ export default function Home() {
             VS.
           </div>
           <SearchAutocomplete
+            key={`p2-${searchKey}`}
             placeholder="Enter comparison player..."
             onSelect={(p) => setP2(p)}
             activeColor={hasSearched ? '#EAB308' : undefined} // Yellow for P2
@@ -61,6 +73,12 @@ export default function Home() {
           <button className={styles.actionButton} onClick={handleSearch}>
             SEARCH
           </button>
+
+          {hasSearched && (
+            <button className={styles.resetButton} onClick={handleReset}>
+              RESET
+            </button>
+          )}
         </div>
 
         <div className={styles.card}>

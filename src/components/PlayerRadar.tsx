@@ -91,6 +91,7 @@ export default function PlayerRadar({ stats = [] }: PlayerRadarProps) {
                         strokeWidth={3}
                         fill={COLORS[idx % COLORS.length]}
                         fillOpacity={0.3}
+                        animationDuration={500}
                     />
                 ))}
             </RadarChart>

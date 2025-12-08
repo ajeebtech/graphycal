@@ -50,6 +50,12 @@ export default function DataPage() {
             }}>
                 <a href="https://x.com/ajeebtech" target="_blank" rel="noopener noreferrer" style={{ color: 'white', textDecoration: 'underline' }}>ajeebtech</a> also made <a href="https://vods.space" target="_blank" rel="noopener noreferrer" style={{ color: 'white', textDecoration: 'underline' }}>vods.space</a>
             </div>
+            <div className={styles.footer}>
+                made by
+                <a href="https://x.com/ajeebtech" target="_blank" rel="noopener noreferrer" className={styles.footerLink}>
+                    ajeebtech
+                </a>
+            </div>
         </main>
     );
 }

@@ -53,11 +53,14 @@ export default function Home() {
   };
 
   const handleReset = () => {
-    setPlayers([null, null]);
-    setStats([null, null]);
-    setHasSearched(false);
-    setError(null);
-    setSearchKey(prev => prev + 1); // Force reset of Autocompletes
+    setStats(prev => prev.map(() => null)); // Animate all graphs to 0
+    setTimeout(() => {
+      setPlayers([null, null]);
+      setStats([null, null]);
+      setHasSearched(false);
+      setError(null);
+      setSearchKey(prev => prev + 1); // Force reset of Autocompletes
+    }, 500);
   };
 
   const updatePlayer = (index: number, player: any) => {

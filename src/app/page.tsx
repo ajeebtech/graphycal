@@ -6,7 +6,6 @@ import PlayerRadar from "@/components/PlayerRadar";
 import SearchAutocomplete from "@/components/SearchAutocomplete";
 import IntroSplash from "@/components/IntroSplash";
 import { useState } from "react";
-import { Analytics } from "@vercel/analytics/next"
 
 export default function Home() {
   const [p1, setP1] = useState<any>(null);
@@ -16,9 +15,14 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [searchKey, setSearchKey] = useState(0); // Used to force-reset child components
+  const [error, setError] = useState<string | null>(null);
 
   const handleSearch = async () => {
-    if (!p1 && !p2) return;
+    if (!p1 || !p2) {
+      setError("you need 2 players to do a comparision");
+      return;
+    }
+    setError(null);
     setLoading(true);
     setHasSearched(true);
 
@@ -46,6 +50,7 @@ export default function Home() {
     setStatsP1(null);
     setStatsP2(null);
     setHasSearched(false);
+    setError(null);
     setSearchKey(prev => prev + 1); // Force reset of Autocompletes
   };
 
@@ -59,7 +64,7 @@ export default function Home() {
           <SearchAutocomplete
             key={`p1-${searchKey}`}
             placeholder="Enter name of player..."
-            onSelect={(p) => setP1(p)}
+            onSelect={(p) => { setP1(p); setError(null); }}
             activeColor={hasSearched ? '#2563EB' : undefined} // Blue for P1
           />
           <div className={styles.vsLabel}>
@@ -68,12 +73,25 @@ export default function Home() {
           <SearchAutocomplete
             key={`p2-${searchKey}`}
             placeholder="Enter comparison player..."
-            onSelect={(p) => setP2(p)}
+            onSelect={(p) => { setP2(p); setError(null); }}
             activeColor={hasSearched ? '#EAB308' : undefined} // Yellow for P2
           />
           <button className={styles.actionButton} onClick={handleSearch}>
             SEARCH
           </button>
+
+          {error && (
+            <div style={{
+              color: '#ff3300',
+              marginTop: '1rem',
+              textAlign: 'center',
+              fontSize: '0.8rem',
+              fontWeight: 'bold',
+              fontFamily: 'monospace'
+            }}>
+              {error}
+            </div>
+          )}
 
           {hasSearched && (
             <button className={styles.resetButton} onClick={handleReset}>

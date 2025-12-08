@@ -113,6 +113,37 @@
   padding: 0.25rem 0;
 }
 
+.actionButton {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 1rem;
+  background: var(--accent-primary);
+  color: black;
+  border: none;
+  border-radius: 0;
+  font-family: var(--font-unbounded), monospace;
+  font-weight: 900;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 4px 4px 0px white;
+}
+
+.actionButton:hover {
+  background: white;
+  color: black;
+  /* Keep black text on white for contrast */
+  box-shadow: 4px 4px 0px var(--accent-primary);
+  transform: translate(-1px, -1px);
+}
+
+.actionButton:active {
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+
 .searchWrapper {
   flex: 1;
   position: relative;
@@ -202,4 +233,16 @@
   background-image: radial-gradient(#333 1px, transparent 1px);
   background-size: 20px 20px;
   overflow: hidden;
+}
+
+.disclaimer {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 1rem;
+  font-family: monospace;
+  font-size: 0.65rem;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  z-index: 10;
 }

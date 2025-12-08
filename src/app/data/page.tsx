@@ -32,6 +32,24 @@ export default function DataPage() {
                     there is no intention of monetizing this, it's free for everyone to use.
                 </p>
             </div>
+            <div style={{
+                maxWidth: '600px',
+                textAlign: 'center',
+                marginTop: '2rem',
+                color: 'var(--accent-primary)',
+                fontFamily: 'var(--font-unbounded), monospace',
+                fontSize: '1.2rem',
+                fontWeight: 'bold',
+                lineHeight: '1.4',
+                padding: '1.5rem',
+                border: '2px solid var(--accent-primary)',
+                boxShadow: '10px 10px 0px var(--accent-primary)',
+                backgroundColor: 'black',
+                textTransform: 'uppercase',
+                letterSpacing: '0.05em'
+            }}>
+                <a href="https://x.com/ajeebtech" target="_blank" rel="noopener noreferrer" style={{ color: 'white', textDecoration: 'underline' }}>ajeebtech</a> also made <a href="https://vods.space" target="_blank" rel="noopener noreferrer" style={{ color: 'white', textDecoration: 'underline' }}>vods.space</a>
+            </div>
         </main>
     );
 }

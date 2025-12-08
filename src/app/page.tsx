@@ -85,10 +85,17 @@ export default function Home() {
           <div className={styles.chartContainer}>
             <PlayerRadar p1={statsP1} p2={statsP2} />
           </div>
-          <p className={styles.disclaimer}>* Data Last 90 Days</p>
-
         </div>
+        <p className={styles.disclaimer}>* Data Last 90 Days</p>
+
       </main>
-    </div>
+
+      <div className={styles.footer}>
+        made by
+        <a href="https://x.com/ajeebtech" target="_blank" rel="noopener noreferrer" className={styles.footerLink}>
+          ajeebtech
+        </a>
+      </div>
+    </div >
   );
 }

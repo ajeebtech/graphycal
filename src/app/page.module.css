@@ -101,6 +101,42 @@
   color: #666;
 }
 
+.footer {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
+  /* Faded white for 'made by' */
+  font-family: var(--font-geist-sans), sans-serif;
+  /* Match the clean sans from image */
+  font-size: 0.75rem;
+  letter-spacing: 0;
+  text-transform: none;
+  /* Lowercase/Normal per image */
+  z-index: 10;
+  pointer-events: none;
+  padding-bottom: 8px;
+}
+
+.footerLink {
+  color: white;
+  /* Solid white for 'ajeebtech' */
+  text-decoration: none;
+  font-weight: 700;
+  margin-left: 5px;
+  display: inline-block;
+  transition: all 0.2s ease;
+  pointer-events: auto;
+}
+
+.footerLink:hover {
+  transform: scale(1.05);
+  /* Subtle scale */
+  /* No glow/shadow per 'exactly like this' request logic, or keep subtle? User said 'same everything'. The image has no glow. Keeping it simple. */
+  text-shadow: none;
+}
+
 .vsLabel {
   width: 100%;
   text-align: center;

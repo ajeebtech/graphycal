@@ -26,7 +26,7 @@ export default function DataPage() {
                 </p>
                 <div style={{ margin: '1.5rem 0', height: '2px', background: 'var(--accent-primary)', opacity: 0.5 }}></div>
                 <p style={{ fontSize: '0.9rem', color: 'rgba(255, 51, 0, 0.8)' }}>
-                    Data refreshes every 24 hours at 00:30 UTC.
+                    Data refreshes every 24 hours at 01:41 UTC.(😭)
                 </p>
                 <p style={{ fontSize: '0.8rem', marginTop: '1rem', color: '#666' }}>
                     there is no intention of monetizing this, it's free for everyone to use.

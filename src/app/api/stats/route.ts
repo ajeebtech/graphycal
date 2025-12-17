@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -9,22 +8,15 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Missing name parameter' }, { status: 400 });
     }
 
-    if (!supabase) {
-        return NextResponse.json({ error: 'Database configuration missing' }, { status: 500 });
-    }
-
     try {
-        const { data, error } = await supabase
-            .from('profiles')
-            .select('*') // Select all columns to find the stats
-            .eq('player_name', name)
-            .single();
+        const response = await fetch(`http://localhost:4000/api/stats?name=${encodeURIComponent(name)}`);
 
-        if (error) {
-            throw error;
+        if (!response.ok) {
+            throw new Error(`Backend responded with ${response.status}`);
         }
 
-        return NextResponse.json({ data });
+        const data = await response.json();
+        return NextResponse.json(data);
     } catch (error: any) {
         console.error('Error fetching stats:', error);
         return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });

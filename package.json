@@ -9,7 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.86.2",
     "@vercel/analytics": "^1.6.1",
     "clsx": "^2.1.1",
     "country-code-emoji": "^2.3.0",

@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -9,28 +8,14 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Missing or invalid term parameter' }, { status: 400 });
     }
 
-    if (!supabase) {
-        console.error('Supabase client not initialized. Check environment variables.');
-        return NextResponse.json({ error: 'Database configuration missing' }, { status: 500 });
-    }
-
     try {
-        const { data: profiles, error } = await supabase
-            .from('profiles')
-            .select('player_name, country, current_team')
-            .ilike('player_name', `%${term}%`)
-            .limit(10);
+        const response = await fetch(`http://localhost:4000/api/search?term=${encodeURIComponent(term)}`);
 
-        if (error) {
-            throw error;
+        if (!response.ok) {
+            throw new Error(`Backend responded with ${response.status}`);
         }
 
-        const results = (profiles || []).map((profile) => ({
-            id: profile.player_name, // Use name as ID for now
-            name: profile.player_name,
-            team: profile.current_team,
-            country: profile.country,
-        }));
+        const data = await response.json();
 
         // Allow CORS
         const headers = {
@@ -39,10 +24,10 @@ export async function GET(request: Request) {
             'Access-Control-Allow-Headers': 'Content-Type',
         };
 
-        return NextResponse.json({ results }, { headers });
+        return NextResponse.json(data, { headers });
 
     } catch (error: any) {
-        console.error('Error searching Supabase:', error);
+        console.error('Error searching backend:', error);
         return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 });
     }
 }

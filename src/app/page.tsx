@@ -4,6 +4,7 @@ import styles from "./page.module.css";
 import Navbar from "@/components/Navbar";
 import PlayerRadar from "@/components/PlayerRadar";
 import SearchAutocomplete from "@/components/SearchAutocomplete";
+import IntroSplash from "@/components/IntroSplash";
 import { useState } from "react";
 
 const COLORS = [
@@ -78,6 +79,7 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
+      <IntroSplash />
       <Navbar />
 
       <main className={styles.main}>
@@ -145,7 +147,7 @@ export default function Home() {
             <PlayerRadar stats={stats} />
           </div>
         </div>
-        <p className={styles.disclaimer}>* Data Last 90 Days</p>
+        <p className={styles.disclaimer}>* all-time regional career stats</p>
 
       </main>
 

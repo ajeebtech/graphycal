@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -9,12 +9,12 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Missing name parameter' }, { status: 400 });
     }
 
-    if (!supabase) {
+    if (!supabaseAdmin) {
         return NextResponse.json({ error: 'Database configuration missing' }, { status: 500 });
     }
 
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
             .from('profiles')
             .select('*') // Select all columns to find the stats
             .eq('player_name', name)

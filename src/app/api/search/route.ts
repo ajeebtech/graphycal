@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -9,13 +9,13 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Missing or invalid term parameter' }, { status: 400 });
     }
 
-    if (!supabase) {
-        console.error('Supabase client not initialized. Check environment variables.');
+    if (!supabaseAdmin) {
+        console.error('Supabase admin client not initialized. Check environment variables.');
         return NextResponse.json({ error: 'Database configuration missing' }, { status: 500 });
     }
 
     try {
-        const { data: profiles, error } = await supabase
+        const { data: profiles, error } = await supabaseAdmin
             .from('profiles')
             .select('player_name, country, current_team')
             .ilike('player_name', `%${term}%`)
